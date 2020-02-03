@@ -1,0 +1,72 @@
+<div class="container">
+ <!-- First Window -->
+  <div *ngIf="hideFirstWindow">
+      <div class="button-container">
+  <button mat-raised-button color="primary" (click)="onStart()">Start</button>
+  <button mat-raised-button color="secondary" (click)="onEnd()">End</button>
+    </div>
+  </div>
+
+
+  <!-- Second Window -->
+  <mat-card *ngIf="hideSecondWindow" class="deviceForm">
+  <form [formGroup]="formGroup">
+      <mat-form-field class="form-element">
+          <mat-label>Available Devices</mat-label>
+          <mat-select formControlName="selectedDevices" multiple>
+            <mat-option *ngFor="let device of availableDevices" [value]="device.kind">{{device.label}}</mat-option>
+          </mat-select>
+          <mat-hint>Select atleast one video and audio device.</mat-hint>
+          <div *ngIf="formGroup.get('selectedDevices').errors">
+            <mat-error *ngIf="formGroup.get('selectedDevices').errors.required"> Please select device.</mat-error>
+          </div>
+        </mat-form-field>
+        <div class="form-element">
+          <label id="example-radio-group-label">Select Category</label>
+          <br>
+        <mat-radio-group matInput formControlName="category" aria-labelledby="example-radio-group-label">
+          <mat-radio-button value="1" checked>Live Stream</mat-radio-button>
+          <mat-radio-button value="2" disabled>ScreenShare</mat-radio-button>
+          <mat-radio-button value="3" disabled>Both</mat-radio-button>
+        </mat-radio-group>
+        <div *ngIf="formGroup.get('category').errors">
+            <mat-error *ngIf="formGroup.get('category').errors.required"> Please select device.</mat-error>
+          </div>
+      </div>
+      <div class="button-container">
+        <button mat-raised-button color="primary" class="button" [disabled]="!formGroup.valid" (click)="submit()">Submit</button>
+        <button mat-raised-button class="button" (click)="goBack()"> Back</button>
+      </div>
+      </form>
+</mat-card>
+
+<!-- Third Window -->
+
+<mat-card class="videoStyle" [style.display]="hideThirdWindow ? 'block' : 'none'">
+
+  <video id="localVideo" autoplay muted width="500" #localVideo></video>
+  <!-- <video id="remoteVideo" autoplay muted width="500" #remoteVideo></video> -->
+  <div>
+      <mat-form-field class="example-full-width">
+          <input matInput placeholder="Enter Streaming Name" [formControl]="streamName">
+        </mat-form-field>
+  <div class="example-full-width">
+      <mat-checkbox [formControl]="share" (change)="shareScreen($event)">Share Screen</mat-checkbox>
+  </div>
+  </div>
+  <div class="button-container">
+    <button mat-flat-button  color="primary" [disabled]="disableButton()" (click)="publish(streamName.value)">Publish</button>
+  <button mat-stroked-button color="warn" [disabled]="disableButton()" (click)="stop(streamName.value)">Stop</button>
+
+  
+</div>
+<div *ngIf="isPublish">
+   <h3> Publishing....  See Live Streaming on Below Link</h3>
+  <span>https://test.antmedia.io:5443/WebRTCAppEE/player.html?name={{streamName.value}}</span>
+</div>
+<!-- <button mat-raised-button color="primary" (click)="shareScreen()">Share Screen</button> -->
+</mat-card>
+
+
+  <!-- <a id="install_chrome_extension_link" href="https://chrome.google.com/webstore/detail/jaefaokkgpkkjijgddghhcncipkebpnb">Install Chrome Extension</a> -->
+</div>
